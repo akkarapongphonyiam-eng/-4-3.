@@ -1,0 +1,1265 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ระบบเก็บเงินห้อง 4/3</title>
+
+<style>
+:root {
+    --purple: #6848bd;
+    --dark: #4d3296;
+    --background: #f6f3fc;
+    --border: #e8e1f2;
+    --text: #302846;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Tahoma, sans-serif;
+    background: var(--background);
+    color: var(--text);
+}
+
+header {
+    background: linear-gradient(120deg, #5235a5, #9879e5);
+    color: white;
+    padding: 28px 15px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0 0 8px;
+}
+
+header p {
+    margin: 0;
+}
+
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px;
+    background: white;
+    box-shadow: 0 3px 12px #30205015;
+}
+
+button {
+    border: none;
+    border-radius: 9px;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+nav button {
+    background: #eee9fa;
+    color: var(--dark);
+}
+
+nav button.active {
+    background: var(--purple);
+    color: white;
+}
+
+main {
+    max-width: 1100px;
+    margin: 25px auto;
+    padding: 0 15px 40px;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+.card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 15px #3020500a;
+}
+
+h2 {
+    margin-top: 0;
+    color: var(--dark);
+    font-size: 20px;
+}
+
+h3 {
+    font-size: 16px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.field {
+    margin-bottom: 14px;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d9d0eb;
+    border-radius: 9px;
+    font-size: 15px;
+    background: white;
+    color: var(--text);
+}
+
+input:focus, select:focus {
+    outline: 2px solid #d8caff;
+    border-color: var(--purple);
+}
+
+.primary {
+    background: var(--purple);
+    color: white;
+}
+
+.secondary {
+    background: #eee8fb;
+    color: var(--dark);
+}
+
+.danger {
+    background: #ffebed;
+    color: #bd344b;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.stat {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 16px;
+}
+
+.stat small {
+    color: #777;
+}
+
+.stat strong {
+    display: block;
+    color: var(--dark);
+    font-size: 23px;
+    margin-top: 7px;
+}
+
+.preview {
+    background: #f6f1ff;
+    border: 1px dashed #c6b5ed;
+    border-radius: 10px;
+    padding: 14px;
+    margin: 10px 0 15px;
+    line-height: 1.8;
+    min-height: 55px;
+}
+
+.item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid var(--border);
+    padding: 13px;
+    border-radius: 10px;
+    margin: 9px 0;
+}
+
+.item small {
+    display: block;
+    color: #777;
+    margin-top: 5px;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.pill {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 30px;
+    font-size: 12px;
+}
+
+.paid {
+    background: #e4f7ed;
+    color: #16804d;
+}
+
+.unpaid {
+    background: #ffedef;
+    color: #bd344b;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+th, td {
+    padding: 11px 9px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    white-space: nowrap;
+}
+
+th {
+    background: #f8f5fd;
+    color: var(--dark);
+}
+
+.note {
+    font-size: 13px;
+    color: #777;
+    line-height: 1.7;
+}
+
+.pager {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.pager button {
+    min-width: 120px;
+}
+
+.welcome {
+    line-height: 1.8;
+}
+
+@media(max-width: 700px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    header h1 {
+        font-size: 22px;
+    }
+
+    .card {
+        padding: 15px;
+    }
+
+    nav {
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+    }
+
+    nav button {
+        white-space: nowrap;
+    }
+}
+
+@media print {
+    nav, .no-print, .pager {
+        display: none !important;
+    }
+
+    .page {
+        display: block !important;
+    }
+
+    .card {
+        box-shadow: none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>ระบบเก็บเงินประจำห้อง 4/3</h1>
+    <p>ภาคเรียนที่ 2 ปีการศึกษา 2569</p>
+</header>
+
+<!-- เมนูเปลี่ยนหน้า -->
+<nav>
+    <button class="active" data-page="home">หน้าหลัก</button>
+    <button data-page="items">จัดการรายการ</button>
+    <button data-page="payment">รับชำระเงิน</button>
+    <button data-page="roster">รายชื่อนักเรียน</button>
+    <button data-page="history">ประวัติการชำระ</button>
+</nav>
+
+<main>
+
+<!-- ================= หน้าที่ 1 ================= -->
+
+<section class="page active" id="home">
+
+    <div class="stats">
+        <div class="stat">
+            <small>นักเรียนทั้งหมด</small>
+            <strong>39 คน</strong>
+        </div>
+
+        <div class="stat">
+            <small>ชำระแล้วในรายการนี้</small>
+            <strong id="homePaid">0</strong>
+        </div>
+
+        <div class="stat">
+            <small>ยังไม่ชำระ</small>
+            <strong id="homeUnpaid">39</strong>
+        </div>
+
+        <div class="stat">
+            <small>ยอดเก็บได้ทั้งหมด</small>
+            <strong id="homeMoney">0 บาท</strong>
+        </div>
+    </div>
+
+    <div class="card welcome">
+        <h2>ยินดีต้อนรับสู่ระบบเก็บเงินห้อง 4/3</h2>
+
+        <p>
+            ระบบนี้ใช้บันทึกการเก็บเงินของนักเรียน
+            สามารถเพิ่มรายการเก็บเงินได้หลายรายการ
+            เช่น ค่าห้อง ค่ากิจกรรม ค่าชีท หรือค่าอุปกรณ์
+        </p>
+
+        <h3>วิธีใช้งาน</h3>
+
+        <ol>
+            <li>เข้าไปที่หน้าจัดการรายการ เพื่อเพิ่มรายการและกำหนดราคา</li>
+            <li>เข้าไปที่หน้ารับชำระเงิน แล้วเลือกรายการที่ต้องการเก็บ</li>
+            <li>กรอกเลขที่นักเรียน ระบบจะแสดงชื่อให้อัตโนมัติ</li>
+            <li>เลือกวิธีชำระเงินและกดยืนยัน</li>
+            <li>ตรวจสอบสถานะและประวัติการชำระเงินได้ในหน้าถัดไป</li>
+        </ol>
+
+        <div class="actions">
+            <button class="primary" onclick="go('items')">
+                เริ่มใช้งาน →
+            </button>
+
+            <button class="secondary" onclick="go('payment')">
+                ไปหน้ารับเงิน
+            </button>
+        </div>
+    </div>
+
+</section>
+
+<!-- ================= หน้าที่ 2 ================= -->
+
+<section class="page" id="items">
+
+    <div class="card">
+        <h2>จัดการรายการเก็บเงิน</h2>
+
+        <p class="note">
+            เพิ่มรายการใหม่และกำหนดจำนวนเงินได้ตามต้องการ
+            เช่น ค่าห้อง ค่ากิจกรรม ค่าชีท หรือค่าอุปกรณ์
+        </p>
+
+        <div class="grid">
+            <div class="field">
+                <label>ชื่อรายการ</label>
+                <input id="itemName"
+                       placeholder="เช่น ค่ากิจกรรม">
+            </div>
+
+            <div class="field">
+                <label>จำนวนเงินต่อคน (บาท)</label>
+                <input id="itemPrice"
+                       type="number"
+                       min="0"
+                       step="0.01"
+                       placeholder="เช่น 50">
+            </div>
+        </div>
+
+        <button class="primary" onclick="addItem()">
+            + เพิ่มรายการ
+        </button>
+
+        <h3>รายการที่สร้างไว้</h3>
+
+        <div id="itemList"></div>
+    </div>
+
+    <div class="pager">
+        <button class="secondary" onclick="go('home')">
+            ← หน้าหลัก
+        </button>
+
+        <button class="primary" onclick="go('payment')">
+            หน้าถัดไป →
+        </button>
+    </div>
+
+</section>
+
+<!-- ================= หน้าที่ 3 ================= -->
+
+<section class="page" id="payment">
+
+    <div class="card">
+        <h2>รับชำระเงิน</h2>
+
+        <div class="field">
+            <label>1. เลือกรายการที่ต้องการชำระ</label>
+            <select id="selectedItem"
+                    onchange="changeItem()">
+            </select>
+        </div>
+
+        <div class="field">
+            <label>2. กรอกเลขที่นักเรียน</label>
+
+            <input id="studentNumber"
+                   type="number"
+                   min="1"
+                   max="39"
+                   placeholder="กรอกเลขที่ เช่น 12"
+                   oninput="showStudent()">
+
+            <p class="note">
+                กรอกเฉพาะเลขที่ ระบบจะแสดงชื่อและรหัสนักเรียนอัตโนมัติ
+            </p>
+        </div>
+
+        <div class="preview" id="studentPreview">
+            กรุณาเลือกรายการและกรอกเลขที่นักเรียน
+        </div>
+
+        <div class="grid">
+            <div class="field">
+                <label>3. จำนวนเงินที่รับ (บาท)</label>
+                <input id="paymentAmount"
+                       type="number"
+                       min="0"
+                       step="0.01"
+                       placeholder="จำนวนเงิน">
+            </div>
+
+            <div class="field">
+                <label>4. ช่องทางการชำระ</label>
+                <select id="paymentMethod">
+                    <option value="เงินสด">เงินสด</option>
+                    <option value="โอนเงิน">โอนเงิน</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="primary" onclick="savePayment()">
+            ยืนยันการรับเงิน
+        </button>
+
+    </div>
+
+    <div class="pager">
+        <button class="secondary" onclick="go('items')">
+            ← หน้าก่อนหน้า
+        </button>
+
+        <button class="primary" onclick="go('roster')">
+            หน้าถัดไป →
+        </button>
+    </div>
+
+</section>
+
+<!-- ================= หน้าที่ 4 ================= -->
+
+<section class="page" id="roster">
+
+    <div class="card">
+        <h2>รายชื่อนักเรียนและสถานะการชำระ</h2>
+
+        <div class="field">
+            <label>เลือกรายการเพื่อตรวจสอบสถานะ</label>
+            <select id="rosterItem" onchange="renderAll()">
+            </select>
+        </div>
+
+        <div class="grid no-print">
+            <div class="field">
+                <label>ค้นหานักเรียน</label>
+                <input id="search"
+                       placeholder="เลขที่ ชื่อ หรือรหัสนักเรียน"
+                       oninput="renderAll()">
+            </div>
+
+            <div class="field">
+                <label>กรองสถานะ</label>
+                <select id="filter" onchange="renderAll()">
+                    <option value="all">ทั้งหมด</option>
+                    <option value="paid">ชำระแล้ว</option>
+                    <option value="unpaid">ยังไม่ชำระ</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>เลขที่</th>
+                        <th>รหัสนักเรียน</th>
+                        <th>ชื่อ - นามสกุล</th>
+                        <th>สถานะ</th>
+                        <th class="no-print">เลือก</th>
+                    </tr>
+                </thead>
+
+                <tbody id="studentTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="pager">
+        <button class="secondary" onclick="go('payment')">
+            ← หน้าก่อนหน้า
+        </button>
+
+        <button class="primary" onclick="go('history')">
+            หน้าถัดไป →
+        </button>
+    </div>
+
+</section>
+
+<!-- ================= หน้าที่ 5 ================= -->
+
+<section class="page" id="history">
+
+    <div class="card">
+        <h2>ประวัติการชำระเงิน</h2>
+
+        <div class="actions no-print"
+             style="margin-bottom:15px">
+
+            <button class="secondary" onclick="exportCSV()">
+                ดาวน์โหลดรายงาน CSV
+            </button>
+
+            <button class="secondary" onclick="window.print()">
+                พิมพ์รายงาน
+            </button>
+
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>วันและเวลา</th>
+                        <th>เลขที่</th>
+                        <th>รหัสนักเรียน</th>
+                        <th>ชื่อ</th>
+                        <th>รายการ</th>
+                        <th>จำนวนเงิน</th>
+                        <th>ช่องทาง</th>
+                        <th class="no-print">จัดการ</th>
+                    </tr>
+                </thead>
+
+                <tbody id="historyTable"></tbody>
+            </table>
+        </div>
+
+        <p class="note">
+            ข้อมูลจะถูกเก็บไว้ในเบราว์เซอร์และอุปกรณ์นี้เท่านั้น
+            ควรดาวน์โหลด CSV สำรองไว้เป็นระยะ
+        </p>
+    </div>
+
+    <div class="pager">
+        <button class="secondary" onclick="go('roster')">
+            ← หน้าก่อนหน้า
+        </button>
+
+        <button class="primary" onclick="go('home')">
+            กลับหน้าหลัก
+        </button>
+    </div>
+
+</section>
+
+</main>
+
+<script>
+cost API_URL = "https://script.google.com/macros/s/AKfycbzPDGSXSOOzrqTCqc7izLKXgBrKumATO-KDKsxK6sJsDuzvrepCDC5CsuvR_yfCCVHg/exec"
+// =====================================
+// รายชื่อนักเรียน 40 คน
+// =====================================
+
+const students = [
+[1,"31780","นายครองภพ ลำเหลือ"],
+[2,"32200","นายจักรภัทร บุตรพรม"],
+[3,"31824","นายธิมายุ สาระพันธ์"],
+[4,"33574","นายดิณัฐวุฒิ นามไพร"],
+[5,"31870","เด็กชายธนภัทร แพงแก้ว"],
+[6,"31871","นายธนภัทร สังขบุตร"],
+[7,"31996","นายพงศธร ได้เมืองปาก"],
+[8,"33586","นายพุฒิศักดิ์ สิงยะเมือง"],
+[9,"31747","นายภวินท์ รุ่งไธสง"],
+[10,"31748","นายภาคิน ไชยกุดฉิม"],
+[11,"32046","นายศุภกสิน ประทุมชัย"],
+[12,"32048","นายอัครพงษ์ พลเยี่ยม"],
+[13,"32090","นายอัครพล ฤทธิรงค์"],
+[14,"31965","นายโอมวิชรา กิ่งเมือง"],
+[15,"31879","นางสาวกนกวรรณ ใบหมาด"],
+[16,"31967","นางสาวกัลยากร ศรีสุข"],
+[17,"32128","นางสาวกิตติกานต์ กัญญาบุญ"],
+[18,"32903","นางสาวชลิตา ปริสา"],
+[19,"31804","นางสาวชาลิดา รอดวินิจ"],
+[20,"31847","นางสาวณิชานันท์ แสนสง่า"],
+[21,"33621","นางสาวดาวิกา แก้วมา"],
+[22,"31972","นางสาวนนทิกา กรมขันธ์"],
+[23,"32101","เด็กหญิงบัณฑิตา ขนจันทร์"],
+[24,"32182","นางสาวปิ่นมุข ปาวัน"],
+[25,"33633","นางสาวพรรณวิสา สิทธิพรม"],
+[26,"32183","นางสาวพลอยไพรินทร์ สร้อยรบ"],
+[27,"33634","นางสาวพัชรินทร์ กิมจำปา"],
+[28,"32016","นางสาวพิชญา บุตรพรม"],
+[29,"31852","นางสาวแพรวไพลิน พันธมา"],
+[30,"32267","นางสาวภัคนันท์ พลเยี่ยม"],
+[31,"32103","นางสาวภัทราพร ลอพิจิตร"],
+[32,"32018","นางสาวมลทกานต์ ทองเหลือง"],
+[33,"31815","นางสาวออยแสง เหมือนชอบ"],
+[34,"31855","เด็กหญิงวรลัญช์ จันทร์สุพรรณ"],
+[35,"31897","เด็กหญิงวานิดา วรรณพฤกษ์"],
+[36,"31898","นางสาววิชญาดา ตรีเมฆ"],
+[38,"33658","นางสาวอรอุมา แสนมี"],
+[39,"32111","เด็กหญิงอาทิตยา กรมโยธา"],
+[40,"31862","นางสาวอาริตา โคตะมูล"]
+];
+
+// =====================================
+// ระบบจัดเก็บข้อมูล
+// =====================================
+
+const PAYMENT_KEY = "room43_payments_full";
+const ITEM_KEY = "room43_items_full";
+
+let payments = JSON.parse(
+    localStorage.getItem(PAYMENT_KEY) || "[]"
+);
+
+let items = JSON.parse(
+    localStorage.getItem(ITEM_KEY) || "null"
+) || [
+    {
+        id: "default",
+        name: "ค่าห้อง",
+        price: 0
+    }
+];
+
+const $ = id => document.getElementById(id);
+
+function saveData() {
+    localStorage.setItem(
+        PAYMENT_KEY,
+        JSON.stringify(payments)
+    );
+
+    localStorage.setItem(
+        ITEM_KEY,
+        JSON.stringify(items)
+    );
+}
+
+function money(value) {
+    return Number(value || 0).toLocaleString("th-TH", {
+        maximumFractionDigits: 2
+    });
+}
+
+function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[char]);
+}
+
+function getStudent(number) {
+    return students.find(
+        student => student[0] === Number(number)
+    );
+}
+
+function getSelectedItem() {
+    return items.find(
+        item => item.id === $("selectedItem").value
+    );
+}
+
+function isPaid(number, itemId) {
+    return payments.some(payment =>
+        payment.number === number &&
+        payment.itemId === itemId
+    );
+}
+
+// =====================================
+// ระบบเปลี่ยนหน้า
+// =====================================
+
+function go(pageId) {
+
+    document.querySelectorAll(".page").forEach(page => {
+        page.classList.toggle(
+            "active",
+            page.id === pageId
+        );
+    });
+
+    document.querySelectorAll("nav button").forEach(button => {
+        button.classList.toggle(
+            "active",
+            button.dataset.page === pageId
+        );
+    });
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+document.querySelectorAll("nav button").forEach(button => {
+    button.addEventListener("click", () => {
+        go(button.dataset.page);
+    });
+});
+
+// =====================================
+// ระบบรายการเก็บเงิน
+// =====================================
+
+function renderItems() {
+
+    const oldSelected = $("selectedItem").value;
+    const oldRoster = $("rosterItem").value;
+
+    const options = items.map(item => `
+        <option value="${escapeHTML(item.id)}">
+            ${escapeHTML(item.name)}
+            (${money(item.price)} บาท)
+        </option>
+    `).join("");
+
+    $("selectedItem").innerHTML = options;
+    $("rosterItem").innerHTML = options;
+
+    if (items.some(item => item.id === oldSelected)) {
+        $("selectedItem").value = oldSelected;
+    }
+
+    if (items.some(item => item.id === oldRoster)) {
+        $("rosterItem").value = oldRoster;
+    }
+
+    $("itemList").innerHTML = items.map(item => `
+        <div class="item">
+
+            <div>
+                <b>${escapeHTML(item.name)}</b>
+                <small>${money(item.price)} บาท / คน</small>
+            </div>
+
+            <div class="actions">
+                <button class="secondary"
+                    onclick="editItem('${escapeHTML(item.id)}')">
+                    แก้ไข
+                </button>
+
+                <button class="danger"
+                    onclick="deleteItem('${escapeHTML(item.id)}')">
+                    ลบ
+                </button>
+            </div>
+
+        </div>
+    `).join("");
+}
+
+function addItem() {
+
+    const name = $("itemName").value.trim();
+    const rawPrice = $("itemPrice").value;
+    const price = Number(rawPrice);
+
+    if (!name) {
+        alert("กรุณากรอกชื่อรายการ");
+        return;
+    }
+
+    if (
+        rawPrice === "" ||
+        !Number.isFinite(price) ||
+        price < 0
+    ) {
+        alert("กรุณากรอกจำนวนเงินให้ถูกต้อง");
+        return;
+    }
+
+    if (items.some(item =>
+        item.name.toLowerCase() === name.toLowerCase()
+    )) {
+        alert("มีรายการชื่อนี้อยู่แล้ว");
+        return;
+    }
+
+    const newItem = {
+        id: "item_" + Date.now(),
+        name: name,
+        price: price
+    };
+
+    items.push(newItem);
+
+    $("itemName").value = "";
+    $("itemPrice").value = "";
+
+    saveData();
+    renderItems();
+
+    $("selectedItem").value = newItem.id;
+
+    changeItem();
+    renderAll();
+
+    alert("เพิ่มรายการเรียบร้อยแล้ว");
+}
+
+function editItem(id) {
+
+    const item = items.find(i => i.id === id);
+
+    if (!item) return;
+
+    const name = prompt("แก้ไขชื่อรายการ", item.name);
+
+    if (name === null) return;
+
+    const rawPrice = prompt(
+        "แก้ไขจำนวนเงินต่อคน",
+        item.price
+    );
+
+    if (rawPrice === null) return;
+
+    const price = Number(rawPrice);
+
+    if (
+        !name.trim() ||
+        rawPrice.trim() === "" ||
+        !Number.isFinite(price) ||
+        price < 0
+    ) {
+        alert("กรุณากรอกข้อมูลให้ถูกต้อง");
+        return;
+    }
+
+    item.name = name.trim();
+    item.price = price;
+
+    saveData();
+    renderItems();
+    renderAll();
+    showStudent();
+}
+
+function deleteItem(id) {
+
+    if (items.length <= 1) {
+        alert("ต้องมีรายการอย่างน้อย 1 รายการ");
+        return;
+    }
+
+    const item = items.find(i => i.id === id);
+
+    if (!confirm(
+        "ต้องการลบรายการ " + item.name + " หรือไม่?"
+    )) {
+        return;
+    }
+
+    items = items.filter(i => i.id !== id);
+
+    // ประวัติการชำระเงินเก่ายังคงอยู่
+
+    saveData();
+    renderItems();
+    renderAll();
+    showStudent();
+}
+
+// =====================================
+// เลือกรายการชำระเงิน
+// =====================================
+
+function changeItem() {
+
+    const item = getSelectedItem();
+
+    $("paymentAmount").value =
+        item && item.price > 0 ? item.price : "";
+
+    showStudent();
+    renderAll();
+}
+
+// =====================================
+// ค้นหานักเรียน
+// =====================================
+
+function showStudent() {
+
+    const number = Number($("studentNumber").value);
+    const student = getStudent(number);
+    const item = getSelectedItem();
+
+    if (!student) {
+        $("studentPreview").textContent =
+            "กรุณากรอกเลขที่นักเรียน 1–40";
+        return;
+    }
+
+    const done = item && isPaid(student[0], item.id);
+
+    $("studentPreview").innerHTML = `
+        <b>เลขที่ ${student[0]}</b><br>
+        ชื่อ: ${escapeHTML(student[2])}<br>
+        รหัสนักเรียน: ${student[1]}<br>
+        รายการ: ${item ? escapeHTML(item.name) : "-"}<br>
+
+        สถานะ:
+        <span class="pill ${done ? "paid" : "unpaid"}">
+            ${done ? "ชำระแล้ว" : "ยังไม่ชำระ"}
+        </span>
+    `;
+}
+
+// =====================================
+// บันทึกการชำระเงิน
+// =====================================
+
+function savePayment() {
+
+    const number = Number($("studentNumber").value);
+    const student = getStudent(number);
+    const item = getSelectedItem();
+
+    const rawAmount = $("paymentAmount").value;
+    const amount = Number(rawAmount);
+
+    const method = $("paymentMethod").value;
+
+    if (!item) {
+        alert("กรุณาเลือกรายการที่ต้องการชำระ");
+        return;
+    }
+
+    if (!student) {
+        alert("กรุณากรอกเลขที่นักเรียนให้ถูกต้อง");
+        return;
+    }
+
+    if (isPaid(number, item.id)) {
+        alert("นักเรียนคนนี้ชำระรายการนี้แล้ว");
+        return;
+    }
+
+    if (
+        rawAmount === "" ||
+        !Number.isFinite(amount) ||
+        amount <= 0
+    ) {
+        alert("กรุณากรอกจำนวนเงินมากกว่า 0");
+        return;
+    }
+
+    const message =
+        "ยืนยันการรับเงินหรือไม่?\n\n" +
+        "ชื่อ: " + student[2] + "\n" +
+        "รายการ: " + item.name + "\n" +
+        "จำนวนเงิน: " + money(amount) + " บาท\n" +
+        "ช่องทาง: " + method;
+
+    if (!confirm(message)) return;
+
+    payments.push({
+        id: "payment_" + Date.now(),
+        number: student[0],
+        studentId: student[1],
+        name: student[2],
+        itemId: item.id,
+        itemName: item.name,
+        amount: amount,
+        method: method,
+        time: new Date().toISOString()
+    });
+
+    saveData();
+    renderAll();
+
+    $("studentNumber").value = "";
+    $("studentPreview").textContent =
+        "บันทึกการชำระเงินเรียบร้อยแล้ว";
+
+    alert("บันทึกการชำระเงินเรียบร้อยแล้ว");
+}
+
+// =====================================
+// แสดงข้อมูลทั้งหมด
+// =====================================
+
+function renderAll() {
+
+    const item = getSelectedItem();
+
+    const rosterItem = items.find(
+        i => i.id === $("rosterItem").value
+    ) || item;
+
+    const paidCount = item
+        ? students.filter(s => isPaid(s[0], item.id)).length
+        : 0;
+
+    $("homePaid").textContent = paidCount;
+    $("homeUnpaid").textContent = 39 - paidCount;
+
+    const total = payments.reduce(
+        (sum, p) => sum + Number(p.amount),
+        0
+    );
+
+    $("homeMoney").textContent =
+        money(total) + " บาท";
+
+    // ตารางรายชื่อนักเรียน
+
+    const search = $("search").value.trim().toLowerCase();
+    const filter = $("filter").value;
+
+    const filtered = students.filter(student => {
+
+        const text = [
+            student[0],
+            student[1],
+            student[2]
+        ].join(" ").toLowerCase();
+
+        const done = rosterItem &&
+            isPaid(student[0], rosterItem.id);
+
+        const matchSearch = text.includes(search);
+
+        const matchStatus =
+            filter === "all" ||
+            (filter === "paid" && done) ||
+            (filter === "unpaid" && !done);
+
+        return matchSearch && matchStatus;
+    });
+
+    $("studentTable").innerHTML = filtered.map(student => {
+
+        const done = rosterItem &&
+            isPaid(student[0], rosterItem.id);
+
+        return `
+            <tr>
+                <td>${student[0]}</td>
+                <td>${student[1]}</td>
+                <td>${escapeHTML(student[2])}</td>
+
+                <td>
+                    <span class="pill ${done ? "paid" : "unpaid"}">
+                        ${done ? "ชำระแล้ว" : "ยังไม่ชำระ"}
+                    </span>
+                </td>
+
+                <td class="no-print">
+                    <button class="secondary"
+                        onclick="chooseStudent(${student[0]})">
+                        เลือก
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join("");
+
+    // ประวัติการชำระเงิน
+
+    const history = [...payments].sort(
+        (a, b) => new Date(b.time) - new Date(a.time)
+    );
+
+    $("historyTable").innerHTML = history.map(payment => `
+        <tr>
+            <td>${new Date(payment.time).toLocaleString("th-TH")}</td>
+            <td>${payment.number}</td>
+            <td>${payment.studentId}</td>
+            <td>${escapeHTML(payment.name)}</td>
+            <td>${escapeHTML(payment.itemName)}</td>
+            <td>${money(payment.amount)} บาท</td>
+            <td>${escapeHTML(payment.method)}</td>
+
+            <td class="no-print">
+                <button class="danger"
+                    onclick="undoPayment('${escapeHTML(payment.id)}')">
+                    ยกเลิก
+                </button>
+            </td>
+        </tr>
+    `).join("") || `
+        <tr>
+            <td colspan="8">ยังไม่มีประวัติการชำระเงิน</td>
+        </tr>
+    `;
+}
+
+// =====================================
+// เลือกนักเรียนจากตาราง
+// =====================================
+
+function chooseStudent(number) {
+
+    $("studentNumber").value = number;
+
+    showStudent();
+
+    go("payment");
+
+    $("studentNumber").focus();
+}
+
+// =====================================
+// ยกเลิกประวัติการชำระเงิน
+// =====================================
+
+function undoPayment(id) {
+
+    if (!confirm("ต้องการยกเลิกการบันทึกนี้หรือไม่?")) {
+        return;
+    }
+
+    payments = payments.filter(
+        payment => payment.id !== id
+    );
+
+    saveData();
+    renderAll();
+    showStudent();
+}
+
+// =====================================
+// ดาวน์โหลดรายงาน CSV
+// =====================================
+
+function exportCSV() {
+
+    const rows = [
+        [
+            "วันและเวลา",
+            "เลขที่",
+            "รหัสนักเรียน",
+            "ชื่อ",
+            "รายการ",
+            "จำนวนเงิน",
+            "ช่องทาง"
+        ],
+
+        ...payments.map(payment => [
+            new Date(payment.time).toLocaleString("th-TH"),
+            payment.number,
+            payment.studentId,
+            payment.name,
+            payment.itemName,
+            payment.amount,
+            payment.method
+        ])
+    ];
+
+    const csv = "\uFEFF" + rows.map(row =>
+        row.map(value =>
+            '"' + String(value).replace(/"/g, '""') + '"'
+        ).join(",")
+    ).join("\r\n");
+
+    const blob = new Blob([csv], {
+        type: "text/csv;charset=utf-8"
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "รายงานเก็บเงินห้อง4-3.csv";
+    link.click();
+
+    URL.revokeObjectURL(url);
+}
+
+// =====================================
+// เริ่มต้นระบบ
+// =====================================
+
+renderItems();
+renderAll();
+showStudent();
+
+</script>
+
+</body>
+</html>
